@@ -10,7 +10,7 @@ class Profile:
         self.user_name = user_name
         self.name_font = name_font
         self.bio = "Hello! I'm " + user_name + ". I love coding, hiking, and exploring new technologies.  I am a prominent figure on the reinmann sum of nerds podcast, and enjoy misleading students in my plp sessions"
-        self.github = "https://github.com/Exahilosys/survey"
+        self.github = "https://github.com/Exahilosys/surve"
         self.profile_pic = "profile.png"
 
 

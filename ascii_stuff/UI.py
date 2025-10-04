@@ -51,9 +51,8 @@ class UI:
 
         os.system('clear')
         term_width = os.get_terminal_size().columns
-        print("\n\n")
         print("\n\n" + Colors.AQUA + "\\"*term_width + Colors.RESET + "\n\n")
-
+        print("\n\n")
 
         # Print profile NAME and PICTURE
 
@@ -92,7 +91,7 @@ class UI:
 
         # Print description/bio and other info
 
-        print("\n\n" + Colors.AQUA + "/"*term_width + Colors.RESET + "\n\n")
+        print("\n\n" + Colors.ORANGE + "/"*term_width + Colors.RESET + "\n\n")
 
 
         print(Colors.BG_ORANGE + Colors.BLACK + "About me:" + Colors.RESET + "\n")
@@ -123,8 +122,43 @@ class UI:
         print(f"{' ' * spacing}{Colors.ORANGE}GITHUB: {github_text}{Colors.RESET}")
 
 
+        # Print instructions at the bottom
+        instruction_font = "pagga"
+        instructions = [
+            pyfiglet.figlet_format("[->] next", font=instruction_font),
+            pyfiglet.figlet_format("[^] return to profile", font=instruction_font),
+            pyfiglet.figlet_format("[<-] go back", font=instruction_font)
+        ]
+
+        # Split each instruction into lines
+        instruction_lines = [instr.split('\n') for instr in instructions]
+        max_height = max(len(lines) for lines in instruction_lines)
+
+        # Calculate widths of each instruction
+        instruction_widths = [max(len(line) for line in instr_lines) for instr_lines in instruction_lines]
+        total_instruction_width = sum(instruction_widths)
+
+        # Calculate spacing to distribute evenly across terminal width
+        available_space = term_width - total_instruction_width
+        spacing = available_space // (len(instructions) + 1)
+
+        print("\n" * 10)
+        # Print instructions evenly spaced across terminal width
+        for i in range(max_height):
+            print(' ' * spacing, end='')  # Left margin
+            for j, instr_lines in enumerate(instruction_lines):
+                if i < len(instr_lines):
+                    print(Colors.BLUE + instr_lines[i] + Colors.RESET, end='')
+                else:
+                    print(' ' * instruction_widths[j], end='')  # Empty space for alignment
+                if j < len(instruction_lines) - 1:
+                    print(' ' * spacing, end='')  # Spacing between instructions
+            print()
+
+
         print("\n\n" + Colors.AQUA + "\\"*term_width + Colors.RESET + "\n\n")
-        
+
+
         return
     # 
     def print_square(self):
