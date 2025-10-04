@@ -1,1 +1,2 @@
 pyfiglet
+ascii_magic

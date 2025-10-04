@@ -1,6 +1,10 @@
 import profile
 import pyfiglet
 import os
+import sys
+import tty
+import termios
+from image_to_ascii_art import profile_picture
 
 # Soft Retro Gruvbox color scheme
 class Colors:
@@ -62,8 +66,12 @@ class UI:
         left_margin = 5
         right_margin = 5
 
-        # Print figlet and square side by side (have to to make them side by side)
-        for i in range(max(len(figlet_lines), 18)):
+        # Get ASCII art lines
+        ascii_art = profile_picture(profile.profile_pic).to_ascii(columns=46)
+        ascii_lines = ascii_art.split('\n')
+
+        # Print figlet and ASCII art side by side
+        for i in range(max(len(figlet_lines), len(ascii_lines))):
             # Print left margin
             print(' ' * left_margin, end='')
 
@@ -75,9 +83,9 @@ class UI:
             else:
                 spacing = term_width - left_margin - 46 - right_margin
 
-            # Print square line on the same row in purple
-            if i < 18:
-                print(' ' * spacing + Colors.RESET + '█' * 46 + Colors.RESET)
+            # Print ASCII art line on the same row
+            if i < len(ascii_lines):
+                print(' ' * spacing + ascii_lines[i] + Colors.RESET)
             else:
                 print()
 
@@ -115,6 +123,8 @@ class UI:
         print(f"{' ' * spacing}{Colors.ORANGE}GITHUB: {github_text}{Colors.RESET}")
 
 
+        print("\n\n" + Colors.AQUA + "\\"*term_width + Colors.RESET + "\n\n")
+        
         return
     # 
     def print_square(self):
@@ -122,6 +132,26 @@ class UI:
             right_margin = term_width - 46
             for i in range(18):
                 print(' ' * right_margin + '█' * 46)
+
+
+    def capture_keypress(self):
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)
+            ch = sys.stdin.read(1)
+            if ch == '\x1b':  # ESC sequence
+                ch = sys.stdin.read(2)
+                if ch == '[D':    # Left arrow
+                    return 1
+                elif ch == '[A':  # Up arrow
+                    return 2
+                elif ch == '[C':  # Right arrow
+                    return 3
+                elif ch == '[B':  # Down arrow
+                    return 4
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 
 
