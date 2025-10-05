@@ -435,7 +435,7 @@ class ChatUI:
                 print("CODE CHALLENGE")
 
             else:
-                self.push_message(self.user_id, message.strip())
+                self.push_message(self.user_name, message.strip())
 
             return message.strip()
         
