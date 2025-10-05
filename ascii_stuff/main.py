@@ -211,7 +211,9 @@ if __name__ == "__main__":
             ui.edit_profile(person)
         elif (ui.capture_keypress() == 3):
             # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
-            UI.pointing_at_self = False # CHANGE
+            ui.pointing_at_self = False # CHANGE
+            if i > 5:
+                i = 3 # CHANGE THESE IF YOU CHANGE # OF USERS
             person.i += 1
             data = retrieve_usr(person.i)
             person.id = data[0]
