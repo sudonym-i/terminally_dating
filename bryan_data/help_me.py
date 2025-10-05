@@ -47,7 +47,8 @@ def add_user(args):
     profile_link = input("Profile Link: ").strip()
     password_hash = input("Password Hash: ").strip()
     user_font = input("User Font: ").strip()
-    user_pict = input("User Picture: ").strip()
+    with open("../ascii_stuff/output.txt", "r") as f:
+        user_pict = f.read()
     with get_conn() as conn:
         with conn.cursor() as curr:
             curr.execute(
