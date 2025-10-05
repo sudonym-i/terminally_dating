@@ -1,3 +1,5 @@
+bash
+
 rm challenge.py
 touch challenge.py
 
