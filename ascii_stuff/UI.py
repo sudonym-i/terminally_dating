@@ -515,7 +515,7 @@ class UI:
 
             # Instructions
             print("\n" + Colors.AQUA + "/"*term_width + Colors.RESET + "\n")
-            instructions = f"{Colors.BLUE}[↑/↓] Navigate  [Enter] Edit  [Esc] Save & Exit{Colors.RESET}"
+            instructions = f"{Colors.BLUE}[↑/↓] Navigate  [Enter] Edit  [q] Save & Exit{Colors.RESET}"
             print(instructions)
 
             # Capture keypress

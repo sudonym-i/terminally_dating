@@ -58,8 +58,8 @@ def add_user(args):
         conn.commit()
     print(f"Added user: {username}")
 
-def retrieve_usr(args):
-    usr_id = 3
+def retrieve_usr(user_ident):
+    usr_id = user_ident
     print("help" + str(usr_id))
     with get_conn() as conn:
         print("help" + str(usr_id))

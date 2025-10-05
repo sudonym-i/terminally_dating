@@ -100,7 +100,7 @@ class Profile:
     """
     def __init__(self):
 
-        data = retrieve_usr(None)
+        data = retrieve_usr(1)
 
         self.id = data[0]
         self.user_name = data[1]
@@ -108,6 +108,7 @@ class Profile:
         self.bio = data[5]
         self.github = data[6]
         self.profile_pic = data[10]
+        self.i = 0
 
 
 
@@ -187,21 +188,37 @@ if __name__ == "__main__":
     # Mock data flow (current implementation)
     person = Profile()
     ui = UI()
-    ui.print_profile(person, "Bryan Holl")
+    while repeat:
+        repeat = True
 
-    if ( ui.capture_keypress() == 3):
-        # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
-        chat = ChatUI("Bryan Holl", "Isaac")
-        chat.render_chat()
+        ui.print_profile(person, "Bryan Holl")
 
-        # DATABASE NOTE: These mock messages should come from database
-        # In production: chat.load_messages() would query messages table
-        chat.push_message("Isaac", "Hey Bryan! How's it going?")
-        chat.push_message("Bryan Holl", "Hey Isaac! I'm doing well, thanks for asking. How about you?")
-        chat.push_message("Isaac", "I'm good too! Just working on some projects.")
+        if ( ui.capture_keypress() == 3):
+            # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
+            chat = ChatUI("Bryan Holl", "Isaac")
+            chat.render_chat()
 
-        chat.request_message()
+            # DATABASE NOTE: These mock messages should come from database
+            # In production: chat.load_messages() would query messages table
+            chat.push_message("Isaac", "Hey Bryan! How's it going?")
+            chat.push_message("Bryan Holl", "Hey Isaac! I'm doing well, thanks for asking. How about you?")
+            chat.push_message("Isaac", "I'm good too! Just working on some projects.")
 
-    elif (ui.capture_keypress() == 2):
-        # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
-        ui.edit_profile(person)
+            chat.request_message()
+
+        elif (ui.capture_keypress() == 2):
+            # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
+            ui.edit_profile(person)
+        elif (ui.capture_keypress() == 3):
+            # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
+            person.i += 1
+            data = retrieve_usr(person.i)
+            person.id = data[0]
+            person.user_name = data[1]
+            person.name_font = data[9]
+            person.bio = data[5]
+            person.github = data[6]
+            person.profile_pic = data[10]
+
+            repeat = True
+            
