@@ -286,15 +286,15 @@ class UI:
 
         if profile.user_name == user:
             instructions = [
-            pyfiglet.figlet_format("[<-] Browse", font=instruction_font),
-            pyfiglet.figlet_format("[^] Edit", font=instruction_font),
-            pyfiglet.figlet_format("[->] Challenge", font=instruction_font)
+            pyfiglet.figlet_format("[<-] My profile", font=instruction_font),
+            pyfiglet.figlet_format("[^] Chat", font=instruction_font),
+            pyfiglet.figlet_format("[->] Next", font=instruction_font)
         ]
         else:
             instructions = [
-                pyfiglet.figlet_format("[<-] My profile", font=instruction_font),
-                pyfiglet.figlet_format("[^] Chat", font=instruction_font),
-                pyfiglet.figlet_format("[->] Next", font=instruction_font)
+            pyfiglet.figlet_format("[<-] Browse", font=instruction_font),
+            pyfiglet.figlet_format("[^] Edit", font=instruction_font),
+            pyfiglet.figlet_format("[->] Challenge", font=instruction_font)
             ]
 
         # Split each instruction into lines
