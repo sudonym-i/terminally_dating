@@ -225,8 +225,11 @@ class UI:
         right_margin = 5
 
 
+        # Ensure profile_pic is a list of lines
+        profile_pic_lines = profile.profile_pic.split('\n') if isinstance(profile.profile_pic, str) else profile.profile_pic
+
         # Print figlet and ASCII art side by side
-        for i in range(max(len(figlet_lines), len(profile.profile_pic))):
+        for i in range(max(len(figlet_lines), len(profile_pic_lines))):
             # Print left margin
             print(' ' * left_margin, end='')
 
@@ -239,8 +242,8 @@ class UI:
                 spacing = term_width - left_margin - 46 - right_margin
 
             # Print ASCII art line on the same row
-            if i < len(profile.profile_pic):
-                print(' ' * spacing + profile.profile_pic[i] + Colors.RESET)
+            if i < len(profile_pic_lines):
+                print(' ' * spacing + profile_pic_lines[i] + Colors.RESET)
             else:
                 print()
 
