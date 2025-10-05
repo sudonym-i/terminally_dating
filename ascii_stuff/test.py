@@ -31,5 +31,5 @@ if __name__ == "__main__":
         chat.push_message("Isaac", "I'm good too! Just working on some projects.")
 
         chat.request_message()
-    elif (ui.capture_keypress() == 1):
+    elif (ui.capture_keypress() == 2):
         ui.edit_profile(person)
