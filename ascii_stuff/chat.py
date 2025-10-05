@@ -1,3 +1,79 @@
+"""
+Chat Module - Real-time Messaging Interface
+============================================
+
+This module provides a terminal-based chat interface for the dating application.
+It handles message display, sending, and real-time chat rendering.
+
+DATABASE INTEGRATION REQUIREMENTS:
+----------------------------------
+To connect this to PostgreSQL, you'll need to:
+
+1. Store messages in a database table
+2. Implement real-time message fetching
+3. Track conversation threads between users
+4. Add message status (sent, delivered, read)
+5. Consider implementing WebSocket or polling for real-time updates
+
+REQUIRED DATABASE TABLES:
+------------------------
+messages table:
+- id: SERIAL PRIMARY KEY
+- sender_id: INTEGER REFERENCES users(id) NOT NULL
+- receiver_id: INTEGER REFERENCES users(id) NOT NULL
+- message_text: TEXT NOT NULL
+- timestamp: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+- is_read: BOOLEAN DEFAULT FALSE
+- conversation_id: INTEGER REFERENCES conversations(id)
+
+conversations table:
+- id: SERIAL PRIMARY KEY
+- user1_id: INTEGER REFERENCES users(id) NOT NULL
+- user2_id: INTEGER REFERENCES users(id) NOT NULL
+- last_message_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+- created_at: TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+INDEXES (for performance):
+- CREATE INDEX idx_messages_conversation ON messages(conversation_id, timestamp);
+- CREATE INDEX idx_messages_sender ON messages(sender_id);
+- CREATE INDEX idx_messages_receiver ON messages(receiver_id);
+
+RECOMMENDED DATABASE FUNCTIONS:
+-------------------------------
+- get_conversation_messages(conv_id, limit) -> Returns recent messages
+- send_message(sender_id, receiver_id, text) -> Inserts new message
+- mark_messages_read(conv_id, user_id) -> Marks messages as read
+- get_or_create_conversation(user1_id, user2_id) -> Gets/creates conversation thread
+
+Example PostgreSQL Queries:
+---------------------------
+```python
+import psycopg2
+
+# Get recent messages
+def get_messages(conversation_id, limit=50):
+    cursor.execute('''
+        SELECT m.id, u.user_name, m.message_text, m.timestamp
+        FROM messages m
+        JOIN users u ON m.sender_id = u.id
+        WHERE m.conversation_id = %s
+        ORDER BY m.timestamp DESC
+        LIMIT %s
+    ''', (conversation_id, limit))
+    return cursor.fetchall()
+
+# Send new message
+def send_message(sender_id, receiver_id, text, conversation_id):
+    cursor.execute('''
+        INSERT INTO messages (sender_id, receiver_id, message_text, conversation_id)
+        VALUES (%s, %s, %s, %s)
+        RETURNING id, timestamp
+    ''', (sender_id, receiver_id, text, conversation_id))
+    conn.commit()
+    return cursor.fetchone()
+```
+"""
+
 import pyfiglet
 import os
 from datetime import datetime
@@ -30,18 +106,173 @@ class Colors:
 
 
 class ChatUI:
+    """
+    Chat UI class for terminal-based messaging.
+
+    DATABASE INTEGRATION:
+    --------------------
+    This class currently stores messages in memory (self.messages list).
+    For production, messages must be stored in and loaded from PostgreSQL.
+
+    Attributes:
+    ----------
+    user_name : str
+        Name of the current user (viewer)
+    chat_partner : str
+        Name of the user they're chatting with
+    messages : list
+        In-memory message cache. Should be replaced with database queries.
+    """
     def __init__(self, user_name, chat_partner):
+        """
+        Initialize chat UI.
+
+        DATABASE TODO:
+        - Accept user_id and partner_id instead of names
+        - Fetch or create conversation_id from database
+        - Load initial message history from database
+
+        Parameters (Current):
+        --------------------
+        user_name : str
+            Current user's username
+        chat_partner : str
+            Chat partner's username
+
+        Parameters (Database Version):
+        ------------------------------
+        user_id : int
+            Current user's database ID
+        partner_id : int
+            Chat partner's database ID
+        db_connection : connection object
+            Active database connection
+
+        Example Database Implementation:
+        --------------------------------
+        ```python
+        def __init__(self, user_id, partner_id, db_conn):
+            self.db = db_conn
+            self.user_id = user_id
+            self.partner_id = partner_id
+
+            # Get or create conversation
+            cursor = self.db.cursor()
+            cursor.execute('''
+                SELECT id FROM conversations
+                WHERE (user1_id = %s AND user2_id = %s)
+                   OR (user1_id = %s AND user2_id = %s)
+            ''', (user_id, partner_id, partner_id, user_id))
+
+            result = cursor.fetchone()
+            if result:
+                self.conversation_id = result[0]
+            else:
+                cursor.execute('''
+                    INSERT INTO conversations (user1_id, user2_id)
+                    VALUES (%s, %s) RETURNING id
+                ''', (user_id, partner_id))
+                self.conversation_id = cursor.fetchone()[0]
+                self.db.commit()
+
+            # Load recent messages
+            self.load_messages()
+        ```
+        """
         self.user_name = user_name
         self.chat_partner = chat_partner
         self.messages = []  # List of tuples: (sender, message, timestamp)
 
     def push_message(self, sender, message):
-        """Add a message to the chat"""
+        """
+        Add a message to the chat.
+
+        DATABASE INTEGRATION CRITICAL:
+        ------------------------------
+        This function currently only adds to in-memory list.
+        You MUST add an INSERT query to persist messages to database.
+
+        Parameters (Current):
+        --------------------
+        sender : str
+            Username of message sender
+        message : str
+            Message text
+
+        Parameters (Database Version):
+        ------------------------------
+        sender_id : int
+            Database ID of sender
+        message : str
+            Message text
+
+        Database Query Needed:
+        ---------------------
+        ```python
+        def push_message_to_db(self, sender_id, message):
+            cursor = self.db.cursor()
+            cursor.execute('''
+                INSERT INTO messages (sender_id, receiver_id, message_text, conversation_id)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id, timestamp
+            ''', (sender_id,
+                  self.partner_id if sender_id == self.user_id else self.user_id,
+                  message,
+                  self.conversation_id))
+
+            msg_id, timestamp = cursor.fetchone()
+            self.db.commit()
+
+            # Update conversation last_message_at
+            cursor.execute('''
+                UPDATE conversations
+                SET last_message_at = CURRENT_TIMESTAMP
+                WHERE id = %s
+            ''', (self.conversation_id,))
+            self.db.commit()
+
+            # Add to local cache
+            self.messages.append((sender_id, message, timestamp))
+            return msg_id
+        ```
+        """
         timestamp = datetime.now().strftime("%H:%M")
         self.messages.append((sender, message, timestamp))
 
     def render_chat(self):
-        """Render the chat UI"""
+        """
+        Render the chat UI in terminal.
+
+        DATABASE INTEGRATION:
+        --------------------
+        Before rendering, you may want to refresh messages from database
+        to show new messages from the chat partner (for real-time effect).
+
+        Add this before rendering:
+        ```python
+        def refresh_messages(self):
+            cursor = self.db.cursor()
+            cursor.execute('''
+                SELECT u.user_name, m.message_text, m.timestamp
+                FROM messages m
+                JOIN users u ON m.sender_id = u.id
+                WHERE m.conversation_id = %s
+                ORDER BY m.timestamp ASC
+            ''', (self.conversation_id,))
+
+            self.messages = cursor.fetchall()
+
+            # Mark messages as read
+            cursor.execute('''
+                UPDATE messages
+                SET is_read = TRUE
+                WHERE conversation_id = %s AND receiver_id = %s
+            ''', (self.conversation_id, self.user_id))
+            self.db.commit()
+        ```
+
+        Call refresh_messages() at the start of this function for real-time updates.
+        """
         os.system('clear')
         print('\033[H', end='')
         term_width = os.get_terminal_size().columns
@@ -76,7 +307,13 @@ class ChatUI:
         print(Colors.BG_BLUE + Colors.BLACK + " Type your message:" + Colors.RESET, end='' + " ")
 
     def _render_user_message(self, message, timestamp, term_width):
-        """Render user's message (right-aligned)"""
+        """
+        Render user's message (right-aligned).
+
+        DATABASE INTEGRATION:
+        --------------------
+        No database queries needed. This is purely a UI rendering function.
+        """
         max_width = term_width // 2
         wrapped_lines = self._wrap_text(message, max_width - 4)
 
@@ -91,7 +328,13 @@ class ChatUI:
         print()
 
     def _render_partner_message(self, message, timestamp, term_width, sender):
-        """Render partner's message (left-aligned)"""
+        """
+        Render partner's message (left-aligned).
+
+        DATABASE INTEGRATION:
+        --------------------
+        No database queries needed. This is purely a UI rendering function.
+        """
         max_width = term_width // 2
         wrapped_lines = self._wrap_text(message, max_width - 4)
 
@@ -104,7 +347,13 @@ class ChatUI:
         print()
 
     def _wrap_text(self, text, max_width):
-        """Wrap text to fit within max_width"""
+        """
+        Wrap text to fit within max_width.
+
+        DATABASE INTEGRATION:
+        --------------------
+        No database queries needed. This is a pure utility function.
+        """
         words = text.split()
         lines = []
         current_line = ""
@@ -122,14 +371,60 @@ class ChatUI:
         return lines if lines else [""]
 
     def request_message(self):
-        """Request input from user and return the message"""
+        """
+        Request input from user and return the message.
+
+        DATABASE INTEGRATION CRITICAL:
+        ------------------------------
+        After user types a message, you should:
+        1. Call push_message() to add it to the chat
+        2. push_message() should INSERT into database (see push_message docs)
+
+        Special Commands:
+        ----------------
+        - "/code": Triggers code challenge (implement DB tracking for challenges)
+
+        Example Implementation:
+        ----------------------
+        ```python
+        def request_message(self):
+            self.render_chat()
+            try:
+                message = input()
+
+                if message == "/code":
+                    # Track code challenge in database
+                    cursor = self.db.cursor()
+                    cursor.execute('''
+                        INSERT INTO challenges (sender_id, receiver_id, created_at)
+                        VALUES (%s, %s, CURRENT_TIMESTAMP)
+                        RETURNING id
+                    ''', (self.user_id, self.partner_id))
+                    self.db.commit()
+                    os.system('clear')
+                    print("CODE CHALLENGE")
+                    return None
+
+                if message.strip():
+                    self.push_message(self.user_id, message.strip())
+
+                return message.strip()
+            except (KeyboardInterrupt, EOFError):
+                return None
+        ```
+
+        Returns:
+        -------
+        str or None
+            The message text, or None if cancelled/special command
+        """
         self.render_chat()
         try:
             message = input()
             if message == "/code":
                 os.system('clear')
                 print("CODE CHALLENGE")
-                
+
             return message.strip()
         except (KeyboardInterrupt, EOFError):
             return None
