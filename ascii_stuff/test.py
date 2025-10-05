@@ -102,11 +102,12 @@ class Profile:
 
         data = retrieve_usr(None)
 
-        self.user_name = data.get("user_name", user_name)
-        self.name_font = data.get("name_font", name_font)
-        self.bio = data.get("bio", "Hello! I'm " + user_name + ". I love coding, hiking, and exploring new technologies.  I am a prominent figure on the reinmann sum of nerds podcast, and enjoy misleading students in my plp sessions")
-        self.github = data.get("github", "https://github.com/Exahilosys/surve")
-        self.profile_pic = "profile.png"
+        self.id = data[0]
+        self.user_name = data[1]
+        self.name_font = data[9]
+        self.bio = data[5]
+        self.github = data[6]
+        self.profile_pic = data[10]
 
 
 
