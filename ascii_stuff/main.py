@@ -1,8 +1,5 @@
 import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'bryan_data'))
-from help_me import retrieve_usr
+from ..bryan_data_for_ascii.help_me import retrieve_usr
 
 """
 Test Module - Mock Implementation for Frontend Testing
