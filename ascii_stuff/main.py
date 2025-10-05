@@ -100,7 +100,7 @@ class Profile:
     """
     def __init__(self):
 
-        data = retrieve_usr(1)
+        data = retrieve_usr(3)
 
         self.id = data[0]
         self.user_name = data[1]
