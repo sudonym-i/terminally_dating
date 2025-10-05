@@ -284,18 +284,18 @@ class UI:
         # Print instructions at the bottom
         instruction_font = "pagga"
 
-        if self.pointing_at_self == False:
-            instructions = [
-            pyfiglet.figlet_format("[<-] My profile", font=instruction_font),
-            pyfiglet.figlet_format("[^] Chat", font=instruction_font),
-            pyfiglet.figlet_format("[->] Next", font=instruction_font)
-        ]
-        else:
+        if self.pointing_at_self == True:
             instructions = [
             pyfiglet.figlet_format("[<-] Chat", font=instruction_font),
             pyfiglet.figlet_format("[^] Edit", font=instruction_font),
             pyfiglet.figlet_format("[->] Explore", font=instruction_font)
             ]
+        else:
+            instructions = [
+            pyfiglet.figlet_format("[<-] My profile", font=instruction_font),
+            pyfiglet.figlet_format("[^] Chat", font=instruction_font),
+            pyfiglet.figlet_format("[->] Next", font=instruction_font)
+        ]
 
 
         # Split each instruction into lines
