@@ -246,7 +246,7 @@ if __name__ == "__main__":
                     print(f"DEBUG: msg = {repr(msg)}")  # Debug output
                     if msg is None or (msg and msg.lower() == 'exit'):
                         break
-                    chat.messages = chat.update()
+                    chat.update()
                
 
             elif key == 3:  # Right arrow - Next profile
