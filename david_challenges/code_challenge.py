@@ -3,6 +3,7 @@ import random
 import os
 import subprocess
 import psycopg2
+import time 
 
 #["ID", "Description", "Prompt1", "Prompt2"]
 
@@ -40,7 +41,7 @@ challenge_script = os.path.join(os.path.dirname(__file__), 'challenge.sh')
 
 def get_user_code(user, prompt: str) -> str:
     print(f"{prompt}")
-    subprocess.run(["bash", challenge_script])
+    subprocess.run(["bash", challenge_script, prompt])
 
 
 def store_answer(username, answer, challenge_selected) -> None:
@@ -123,8 +124,11 @@ def code_challenge(user1, user2):
             # Try to execute user code
             if(execute_user_code(combined_code)):
                 print(f"\nCoding challenge PASSED! Both codes executed successfully!")
+                time.sleep(2)
             else:
                 print(f"\nCoding challenge FAILED! The combined code failed to execute :(")
+                time.sleep(2)
+
             
             #print(f"\nCombined Code:\n{combined_code}") # For testing purposes, print the combined code
 
