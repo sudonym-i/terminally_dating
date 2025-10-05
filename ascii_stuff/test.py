@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from bryan_data.help_me import retrieve_usr
+
 """
 Test Module - Mock Implementation for Frontend Testing
 ======================================================
@@ -94,10 +99,13 @@ class Profile:
         Path to profile picture (from users.profile_pic)
     """
     def __init__(self, user_name, name_font):
-        self.user_name = user_name
-        self.name_font = name_font
-        self.bio = "Hello! I'm " + user_name + ". I love coding, hiking, and exploring new technologies.  I am a prominent figure on the reinmann sum of nerds podcast, and enjoy misleading students in my plp sessions"
-        self.github = "https://github.com/Exahilosys/surve"
+
+        data = retrieve_usr(None)
+
+        self.user_name = data.get("user_name", user_name)
+        self.name_font = data.get("name_font", name_font)
+        self.bio = data.get("bio", "Hello! I'm " + user_name + ". I love coding, hiking, and exploring new technologies.  I am a prominent figure on the reinmann sum of nerds podcast, and enjoy misleading students in my plp sessions")
+        self.github = data.get("github", "https://github.com/Exahilosys/surve")
         self.profile_pic = "profile.png"
 
 
