@@ -2,20 +2,38 @@ import psycopg2
 from psycopg2 import OperationalError
 import argparse
 
-
 # Define the database schema
-SCHEMA = """
+SCHEMA1 = """
 CREATE TABLE IF NOT EXISTS challenges (
     id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL UNIQUE,
-    email TEXT NOT NULL UNIQUE,
-    age INTEGER,
-    usr_location TEXT,
-    bio TEXT,
-    profile_link TEXT,
-    password_hash TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
+    description TEXT,
+    prompt1 TEXT,
+    prompt2 TEXT,
+    FOREIGN KEY (id) REFERENCES answers(problem_id)
     );
+"""
+
+SCHEMA2 = """
+CREATE TABLE IF NOT EXISTS messages (
+    id SERIAL PRIMARY KEY,
+    message TEXT,
+    sender TEXT,
+    receiver TEXT,
+    date_uploaded TIMESTAMP NOW(),
+    FOREIGN KEY (sender) REFERENCES tablesd(username),
+    FOREIGN KEY (receiver) REFERENCES tablesd(username)
+    );
+"""
+
+SCHEMA3 = """
+CREATE TABLE IF NOT EXISTS answers (
+    id SERIAL PRIMARY KEY,
+    user TEXT,
+    answer TEXT,
+    problem_id INTEGER,
+    FOREIGN KEY (problem_id) REFERENCES challenges(id),
+    FOREIGN KEY (user) REFERENCES tablesd(username)
+);
 """
 
 def get_conn():
@@ -33,50 +51,98 @@ def init_db(args):
     print("Help")
     with get_conn() as conn:
         with conn.cursor() as curr:
-            curr.execute(SCHEMA)
+            curr.execute(SCHEMA1)
+            curr.execute(SCHEMA2)
+            curr.execute(SCHEMA3)
         conn.commit()
     print("Help me")
     print(f"Initialized")
 
-def add_user(args):
-    username = input("Username: ").strip()
-    email = input("Email: ").strip()
-    age = int(input("Age: ").strip())
-    usr_location = input("Location: ").strip()
-    bio = input("Bio: ").strip()
-    profile_link = input("Profile Link: ").strip()
-    password_hash = input("Password Hash: ").strip()
+def add_challenge(args):
+    desc = input("Enter a description").strip()
+    prompt1 = input("Enter prompt 1.").strip()
+    prompt2 = input("Enter prompt 2.").strip()
     with get_conn() as conn:
         with conn.cursor() as curr:
             curr.execute(
-                "INSERT INTO tablesd (username,email,age,usr_location,bio,profile_link,password_hash) VALUES (%s,%s,%s,%s,%s,%s,%s);",
-                (username,email,age,usr_location,bio,profile_link,password_hash)
+                "INSERT INTO challenges (input, prompt1, prompt2) VALUES (%s,%s,%s);",
+                (desc, prompt1, prompt2)
             )
         conn.commit()
-    print(f"Added user: {username}")
+    print(f"Added challenge!")
 
-def retrieve_usr(args):
-    usr_id = int(input("User ID: ").strip())
-    print("help" + str(usr_id))
+def add_message(args):
+    mess = input("Please Enter a message: ").strip()
+    send = input("Please Enter Sender Name: ").strip()
+    rec = input("Please Enter the Name of the Receiver").strip()
     with get_conn() as conn:
-        print("help" + str(usr_id))
         with conn.cursor() as curr:
-            curr.execute("SELECT * FROM tablesd WHERE id = %s;", (usr_id,))
+            curr.execute(
+                "INSERT INTO tablesd (message, sender, receiver) VALUES (%s,%s,%s);",
+                (mess, send, rec)
+            )
+        conn.commit()
+    print(f"{send} sent a message to {rec}.")
+
+def add_answer(args):
+    user = input("Please enter your name. ").strip()
+    ans = input("Please enter your answer. ").strip()
+    p_id = input("Please enter the id for the problem corresponding to the answer: ").input()
+    with get_conn() as conn:
+        with conn.cursor() as curr:
+            curr.execute(
+                "INSERT INTO tablesd (user, answer, problem_id) VALUES (%s,%s,%s);",
+                (user, ans, p_id)
+            )
+        conn.commit()
+    print(f"{user} added their answer to problem {p_id}")
+
+
+
+def retrieve_problem(args):
+    id = int(input("Challenge ID: ").strip())
+    print("help" + str(id))
+    with get_conn() as conn:
+        print("help" + str(id))
+        with conn.cursor() as curr:
+            curr.execute("SELECT * FROM challenges WHERE id = %s;", (id,))
             info = curr.fetchone()
-            print(f"Retrieved user ID: {usr_id}")
+            print(f"Retrieved ID: {id}")
+            return info
+        
+def retrieve_message(args):
+    id = int(input("Message ID: ").strip())
+    print("help" + str(id))
+    with get_conn() as conn:
+        print("help" + str(id))
+        with conn.cursor() as curr:
+            curr.execute("SELECT * FROM messages WHERE id = %s;", (id,))
+            info = curr.fetchone()
+            print(f"Retrieved ID: {id}")
+            return info
+        
+def retrieve_answers(args):
+    id = int(input("Answers ID: ").strip())
+    print("help" + str(id))
+    with get_conn() as conn:
+        print("help" + str(id))
+        with conn.cursor() as curr:
+            curr.execute("SELECT * FROM answers WHERE id = %s;", (id,))
+            info = curr.fetchone()
+            print(f"Retrieved ID: {id}")
             return info
 
 def main():
     ap = argparse.ArgumentParser(description="SQLite terminal CLI")
     sp = ap.add_subparsers(dest="cmd", required=True)
     sp.add_parser("init").set_defaults(func=init_db)
-    sp.add_parser("add").set_defaults(func=add_user)
-    sp.add_parser("get").set_defaults(func=retrieve_usr)
-    with get_conn() as conn:
-        with conn.cursor() as curr:
-            curr.execute("ALTER TABLE tablesd ADD COLUMN pict TEXT;")
-        conn.commit()
-    print(f"Added font :)")
+    sp.add_parser("add_c").set_defaults(func=add_challenge)
+    sp.add_parser("add_m").set_defaults(func=add_message)
+    sp.add_parser("add_a").set_defaults(func=add_answer)
+    sp.add_parser("get_c").set_defaults(func=retrieve_problem)
+    sp.add_parser("get_a").set_defaults(func=retrieve_answers)
+    sp.add_parser("get_m").set_defaults(func=add_message)
+    print(f"Added something :)")
 
 
 
