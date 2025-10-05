@@ -134,7 +134,7 @@ class UI:
              "georgi16", "3d-ascii", "georgia11", "banner3", "new_asci", "the_edge", "nscript",
              "cybermedium", "big_money-nw", "starwars", "pagga", "delta_corps_priest_1", "rozzo", "sub-zero",
              "this", "amc_aaa01", "fraktur", "nvscript"}
-
+        self.pointing_at_self = True
 
     def print_profile( self, profile, user):
         """
@@ -284,18 +284,21 @@ class UI:
         # Print instructions at the bottom
         instruction_font = "pagga"
 
-        if profile.user_name == user:
+        if self.pointing_at_self == False:
             instructions = [
             pyfiglet.figlet_format("[<-] My profile", font=instruction_font),
             pyfiglet.figlet_format("[^] Chat", font=instruction_font),
             pyfiglet.figlet_format("[->] Next", font=instruction_font)
         ]
+
+
         else:
             instructions = [
-            pyfiglet.figlet_format("[<-] Browse", font=instruction_font),
+            pyfiglet.figlet_format("[<-] Chat", font=instruction_font),
             pyfiglet.figlet_format("[^] Edit", font=instruction_font),
-            pyfiglet.figlet_format("[->] Challenge", font=instruction_font)
+            pyfiglet.figlet_format("[->] Explore", font=instruction_font)
             ]
+
 
         # Split each instruction into lines
         instruction_lines = [instr.split('\n') for instr in instructions]

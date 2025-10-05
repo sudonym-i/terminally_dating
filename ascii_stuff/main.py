@@ -193,7 +193,7 @@ if __name__ == "__main__":
 
         ui.print_profile(person, "Bryan Holl")
 
-        if ( ui.capture_keypress() == 3):
+        if ( ui.capture_keypress() == 1):
             # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
             chat = ChatUI("Bryan Holl", "Isaac")
             chat.render_chat()
@@ -211,6 +211,7 @@ if __name__ == "__main__":
             ui.edit_profile(person)
         elif (ui.capture_keypress() == 3):
             # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
+            UI.pointing_at_self = False # CHANGE
             person.i += 1
             data = retrieve_usr(person.i)
             person.id = data[0]
