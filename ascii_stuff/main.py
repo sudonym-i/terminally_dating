@@ -108,7 +108,7 @@ class Profile:
         self.bio = data[5]
         self.github = data[6]
         self.profile_pic = data[10]
-        self.i = 0
+        self.i = 3
 
 
 
