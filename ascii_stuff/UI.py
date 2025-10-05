@@ -290,8 +290,6 @@ class UI:
             pyfiglet.figlet_format("[^] Chat", font=instruction_font),
             pyfiglet.figlet_format("[->] Next", font=instruction_font)
         ]
-
-
         else:
             instructions = [
             pyfiglet.figlet_format("[<-] Chat", font=instruction_font),
