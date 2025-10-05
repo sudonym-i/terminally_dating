@@ -196,36 +196,70 @@ if __name__ == "__main__":
 
         key = ui.capture_keypress()
 
-        if key == 1:
-            # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
-            chat = ChatUI("Bryan Holl", "Isaac")
-            chat.render_chat()
+        if ui.pointing_at_self:
+            # When viewing own profile
+            if key == 1:  # Left arrow - Chat
+                # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
+                chat = ChatUI("Bryan Holl", "Isaac")
+                chat.render_chat()
 
-            # DATABASE NOTE: These mock messages should come from database
-            # In production: chat.load_messages() would query messages table
-            chat.push_message("Isaac", "Hey Bryan! How's it going?")
-            chat.push_message("Bryan Holl", "Hey Isaac! I'm doing well, thanks for asking. How about you?")
-            chat.push_message("Isaac", "I'm good too! Just working on some projects.")
+                # DATABASE NOTE: These mock messages should come from database
+                # In production: chat.load_messages() would query messages table
+                chat.push_message("Isaac", "Hey Bryan! How's it going?")
+                chat.push_message("Bryan Holl", "Hey Isaac! I'm doing well, thanks for asking. How about you?")
+                chat.push_message("Isaac", "I'm good too! Just working on some projects.")
 
-            chat.request_message()
+                chat.request_message()
 
-        elif key == 2:
-            # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
-            ui.edit_profile(person)
-        elif key == 3:
-            # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
-            ui.pointing_at_self = False # CHANGE
-            if person.i > 5:
-                person.i = 3 # CHANGE THESE IF YOU CHANGE # OF USERS
-            else:
-                person.i += 1
-            data = retrieve_usr(person.i)
-            person.id = data[0]
-            person.user_name = data[1]
-            person.name_font = data[9]
-            person.bio = data[5]
-            person.github = data[6]
-            person.profile_pic = data[10]
+            elif key == 2:  # Up arrow - Edit
+                # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
+                ui.edit_profile(person)
 
-            repeat = True
+            elif key == 3:  # Right arrow - Explore (go to next profile)
+                ui.pointing_at_self = False
+                if person.i > 5:
+                    person.i = 3  # CHANGE THESE IF YOU CHANGE # OF USERS
+                else:
+                    person.i += 1
+                data = retrieve_usr(person.i)
+                person.id = data[0]
+                person.user_name = data[1]
+                person.name_font = data[9]
+                person.bio = data[5]
+                person.github = data[6]
+                person.profile_pic = data[10]
+
+        else:
+            # When viewing other profiles
+            if key == 1:  # Left arrow - Return to My profile
+                person.i = 3  # Return to user's own profile (ID 3)
+                ui.pointing_at_self = True
+                data = retrieve_usr(person.i)
+                person.id = data[0]
+                person.user_name = data[1]
+                person.name_font = data[9]
+                person.bio = data[5]
+                person.github = data[6]
+                person.profile_pic = data[10]
+
+            elif key == 2:  # Up arrow - Chat
+                # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
+                chat = ChatUI("Bryan Holl", person.user_name)
+                chat.render_chat()
+                chat.request_message()
+
+            elif key == 3:  # Right arrow - Next profile
+                if person.i > 5:
+                    person.i = 3  # CHANGE THESE IF YOU CHANGE # OF USERS
+                else:
+                    person.i += 1
+                data = retrieve_usr(person.i)
+                person.id = data[0]
+                person.user_name = data[1]
+                person.name_font = data[9]
+                person.bio = data[5]
+                person.github = data[6]
+                person.profile_pic = data[10]
+
+        repeat = True
             
