@@ -1,8 +1,7 @@
 import sqlite3, argparse
 
-#DB_PATH = Path("app.db")
 DB_PATH = "/Users/bryanholl/Documents/COMP_SCI_2025_2026/" \
-"Hackathon/terminally_dating/app.db"
+          "Hackathon/terminally_dating/app.db"
 
 # Define the database schema
 SCHEMA = """
@@ -41,7 +40,7 @@ def add_user(args):
         try:
             conn.execute(
                 "INSERT INTO Users"\
-                "(usrnm,email,age,usr_location,bio,profile_link,password_hash)"\
+                "(username,email,age,usr_location,bio,profile_link,password_hash)"\
                 "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (username,email,age,usr_location,bio,profile_link,password_hash),
             )
@@ -53,13 +52,13 @@ def list_users(args):
     with get_db(args.db) as conn:
         rows = conn.execute(
             "SELECT id, username, email, age, usr_location, " \
-            "created_at FROM users ORDER BY id DESC"
+            "created_at FROM Users ORDER BY id DESC"
         ).fetchall()
     if not rows:
         print("(no users)")
         return
     for r in rows:
-        print(f"{r[0]:>3} | {r[1]:<20} | {r[2]:<28} | age={r[3]} | \
+        print(f"{r[0]:>3} | {r[1]:<20} | {r[2]:<28} | {r[3]} | \
               {r[4]} | {r[5]}")
     return rows
 
@@ -87,8 +86,6 @@ def main():
     sp.add_parser("add").set_defaults(func=add_user)
     sp.add_parser("list").set_defaults(func=list_users)
     p_find = sp.add_parser("find").set_defaults(func=search_users)
-    #p_find.add_argument("query", nargs="?")
-    #p_find.set_defaults(func=search_users)
 
     # parse args and call the appropriate function
     args = ap.parse_args()
