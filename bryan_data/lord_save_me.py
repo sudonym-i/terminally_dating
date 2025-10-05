@@ -8,8 +8,7 @@ CREATE TABLE IF NOT EXISTS challenges (
     id SERIAL PRIMARY KEY,
     description TEXT,
     prompt1 TEXT,
-    prompt2 TEXT,
-    FOREIGN KEY (id) REFERENCES answers(problem_id)
+    prompt2 TEXT
     );
 """
 
@@ -19,20 +18,16 @@ CREATE TABLE IF NOT EXISTS messages (
     message TEXT,
     sender TEXT,
     receiver TEXT,
-    date_uploaded TIMESTAMP NOW(),
-    FOREIGN KEY (sender) REFERENCES tablesd(username),
-    FOREIGN KEY (receiver) REFERENCES tablesd(username)
+    date_uploaded TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 """
 
 SCHEMA3 = """
 CREATE TABLE IF NOT EXISTS answers (
     id SERIAL PRIMARY KEY,
-    user TEXT,
+    username TEXT,
     answer TEXT,
-    problem_id INTEGER,
-    FOREIGN KEY (problem_id) REFERENCES challenges(id),
-    FOREIGN KEY (user) REFERENCES tablesd(username)
+    problem_id INTEGER
 );
 """
 
@@ -65,7 +60,7 @@ def add_challenge(args):
     with get_conn() as conn:
         with conn.cursor() as curr:
             curr.execute(
-                "INSERT INTO challenges (input, prompt1, prompt2) VALUES (%s,%s,%s);",
+                "INSERT INTO challenges (description, prompt1, prompt2) VALUES (%s,%s,%s);",
                 (desc, prompt1, prompt2)
             )
         conn.commit()
@@ -91,7 +86,7 @@ def add_answer(args):
     with get_conn() as conn:
         with conn.cursor() as curr:
             curr.execute(
-                "INSERT INTO tablesd (user, answer, problem_id) VALUES (%s,%s,%s);",
+                "INSERT INTO tablesd (username, answer, problem_id) VALUES (%s,%s,%s);",
                 (user, ans, p_id)
             )
         conn.commit()
@@ -131,6 +126,14 @@ def retrieve_answers(args):
             info = curr.fetchone()
             print(f"Retrieved ID: {id}")
             return info
+        
+def lookup(number):
+    pp = "prompt" + str(number)
+    with get_conn() as conn:
+        with conn.cursor() as curr:
+            curr.execute(f"SELECT {pp} FROM challenges WHERE challenges.id = 1")
+            info = curr.fetchone()
+            return info
 
 def main():
     ap = argparse.ArgumentParser(description="SQLite terminal CLI")
@@ -143,6 +146,8 @@ def main():
     sp.add_parser("get_a").set_defaults(func=retrieve_answers)
     sp.add_parser("get_m").set_defaults(func=add_message)
     print(f"Added something :)")
+    #num = input("Enter a player number")
+    #print(lookup(num))
 
 
 
