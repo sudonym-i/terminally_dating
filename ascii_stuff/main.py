@@ -233,7 +233,6 @@ if __name__ == "__main__":
             # When viewing other profiles
             if key == 1:  # Left arrow - Return to My profile
                 person.i = 3  # Return to user's own profile (ID 3)
-                ui.pointing_at_self = True
                 data = retrieve_usr(person.i)
                 person.id = data[0]
                 person.user_name = data[1]
@@ -241,6 +240,7 @@ if __name__ == "__main__":
                 person.bio = data[5]
                 person.github = data[6]
                 person.profile_pic = data[10]
+                # Loop will update pointing_at_self automatically on next iteration
 
             elif key == 2:  # Up arrow - Chat
                 # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
