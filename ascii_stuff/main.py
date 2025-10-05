@@ -237,16 +237,13 @@ if __name__ == "__main__":
                 # Loop will update pointing_at_self automatically on next iteration
 
             elif key == 2:  # Up arrow - Chat
+                # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
+                chat = ChatUI("Bryan Holl", person.user_name)
 
                 while True:
-                    msg = input("Type your message (or 'exit' to leave chat): ").strip()
-                    if msg.lower() == 'exit':
+                    msg = chat.request_message()
+                    if msg is None or msg.lower() == 'exit':
                         break
-                    print(f"Sending message: {msg}")
-                    chat = ChatUI("Bryan Holl", person.user_name)
-                    chat.render_chat()
-                    chat.request_message()
-                # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
                
 
             elif key == 3:  # Right arrow - Next profile
