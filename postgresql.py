@@ -8,7 +8,7 @@ from psycopg2 import errors  # for FK/unique violations
 # Use env var or edit this string:
 PG_DSN = os.getenv(
     "DATABASE_URL",
-    "postgresql://app_user:change-me@localhost:5432/app_db"
+    "//terminally:dating@192.168.137.50:5432/mydatabase"
 )
 
 DDL_USERS = """
