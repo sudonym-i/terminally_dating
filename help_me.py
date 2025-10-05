@@ -55,11 +55,21 @@ def add_user(args):
         conn.commit()
     print(f"Added user: {username}")
 
+def retrieve_usr(args):
+    usr_id = int(input("User ID: ").strip())
+    with get_conn() as conn:
+        with conn.cursor() as curr:
+            curr.execute("SELECT * FROM tablesd WHERE id = %s;", (usr_id,))
+            info = curr.fetchone()
+            print(f"Retrieved user ID: {usr_id}")
+            return info
+
 def main():
     ap = argparse.ArgumentParser(description="SQLite terminal CLI")
     sp = ap.add_subparsers(dest="cmd", required=True)
     sp.add_parser("init").set_defaults(func=init_db)
     sp.add_parser("add").set_defaults(func=add_user)
+    sp.add_parser("get").set_defaults(func=retrieve_usr)
 
 
     args = ap.parse_args()
