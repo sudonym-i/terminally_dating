@@ -66,14 +66,19 @@ def add_challenge(args):
         conn.commit()
     print(f"Added challenge!")
 
-def add_message(args):
-    mess = input("Please Enter a message: ").strip()
-    send = input("Please Enter Sender Name: ").strip()
-    rec = input("Please Enter the Name of the Receiver").strip()
+def add_message(mess=None, send=None, rec=None):
+    # Interactive mode if no parameters provided
+    if mess is None:
+        mess = input("Please Enter a message: ").strip()
+    if send is None:
+        send = input("Please Enter Sender Name: ").strip()
+    if rec is None:
+        rec = input("Please Enter the Name of the Receiver").strip()
+
     with get_conn() as conn:
         with conn.cursor() as curr:
             curr.execute(
-                "INSERT INTO tablesd (message, sender, receiver) VALUES (%s,%s,%s);",
+                "INSERT INTO messages (message, sender, receiver) VALUES (%s,%s,%s);",
                 (mess, send, rec)
             )
         conn.commit()

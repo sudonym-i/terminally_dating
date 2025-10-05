@@ -77,6 +77,9 @@ def send_message(sender_id, receiver_id, text, conversation_id):
 import pyfiglet
 import os
 from datetime import datetime
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'bryan_data'))
+from lord_save_me import add_message
 
 
 # Soft Retro Gruvbox color scheme
@@ -238,6 +241,12 @@ class ChatUI:
         """
         timestamp = datetime.now().strftime("%H:%M")
         self.messages.append((sender, message, timestamp))
+
+        # Determine receiver based on sender
+        receiver = self.chat_partner if sender == self.user_name else self.user_name
+
+        # Add message to database
+        add_message(mess=message, send=sender, rec=receiver)
 
     def render_chat(self):
         """
