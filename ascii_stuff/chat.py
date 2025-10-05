@@ -79,7 +79,7 @@ import os
 from datetime import datetime
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'bryan_data'))
-from lord_save_me import add_message
+from lord_save_me import add_message, get_messages_between
 
 
 # Soft Retro Gruvbox color scheme
@@ -184,7 +184,8 @@ class ChatUI:
         """
         self.user_name = user_name
         self.chat_partner = chat_partner
-        self.messages = []  # List of tuples: (sender, message, timestamp)
+        # Load existing messages from database
+        self.messages = get_messages_between(user_name, chat_partner)
 
     def push_message(self, sender, message):
         """
