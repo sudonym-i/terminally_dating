@@ -434,6 +434,10 @@ class ChatUI:
                 os.system('clear')
                 print("CODE CHALLENGE")
 
+            else:
+                self.push_message(self.user_id, message.strip())
+
             return message.strip()
+        
         except (KeyboardInterrupt, EOFError):
             return None

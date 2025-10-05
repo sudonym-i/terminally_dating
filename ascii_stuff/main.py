@@ -203,12 +203,6 @@ if __name__ == "__main__":
                 chat = ChatUI("Bryan Holl", "Isaac")
                 chat.render_chat()
 
-                # DATABASE NOTE: These mock messages should come from database
-                # In production: chat.load_messages() would query messages table
-                chat.push_message("Isaac", "Hey Bryan! How's it going?")
-                chat.push_message("Bryan Holl", "Hey Isaac! I'm doing well, thanks for asking. How about you?")
-                chat.push_message("Isaac", "I'm good too! Just working on some projects.")
-
                 chat.request_message()
 
             elif key == 2:  # Up arrow - Edit
