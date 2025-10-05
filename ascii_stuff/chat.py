@@ -52,7 +52,7 @@ class ChatUI:
         print( Colors.AQUA + "_-"* (term_width//2) + Colors.RESET + "\n")
 
         # Chat header with partner name
-        header = pyfiglet.figlet_format(f"Chat: {self.chat_partner}", font="pagga")
+        header = pyfiglet.figlet_format(f"Chatting with: {self.chat_partner}", font="pagga")
         header_lines = header.split('\n')
         for line in header_lines:
             print(Colors.YELLOW + line.center(term_width) + Colors.RESET)
