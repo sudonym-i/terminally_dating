@@ -126,6 +126,10 @@ class ChatUI:
         self.render_chat()
         try:
             message = input()
+            if message == "/code":
+                os.system('clear')
+                print("CODE CHALLENGE")
+                
             return message.strip()
         except (KeyboardInterrupt, EOFError):
             return None
