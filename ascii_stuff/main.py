@@ -202,9 +202,11 @@ if __name__ == "__main__":
             if key == 1:  # Left arrow - Chat
                 # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
                 chat = ChatUI("Bryan Holl", "Isaac")
-                chat.render_chat()
 
-                chat.request_message()
+                while True:
+                    msg = chat.request_message()
+                    if (msg.lower() == 'exit'):
+                        break
 
             elif key == 2:  # Up arrow - Edit
                 # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
@@ -244,6 +246,8 @@ if __name__ == "__main__":
                 while True:
                     msg = chat.request_message()
                     print(f"DEBUG: msg = {repr(msg)}")  # Debug output
+                    if (msg.lower() == 'exit'):
+                        break
                
 
             elif key == 3:  # Right arrow - Next profile
