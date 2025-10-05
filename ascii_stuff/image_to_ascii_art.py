@@ -136,4 +136,10 @@ class profile_picture:
             If image_path doesn't exist (check database paths are valid)
         """
         art = AsciiArt.from_image(self.image_path)
-        return art.to_ascii(columns=columns, width_ratio=2.0)
+
+        with open("output.txt", "w") as f:
+            f.write(art.to_ascii(columns=columns, width_ratio=2.0))
+
+
+profile = profile_picture("profile.png")
+profile.to_ascii()
