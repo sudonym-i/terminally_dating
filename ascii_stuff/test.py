@@ -185,7 +185,7 @@ if __name__ == "__main__":
     """
 
     # Mock data flow (current implementation)
-    person = Profile("Bryan Holl", "delta_corps_priest_1")
+    person = Profile()
     ui = UI()
     ui.print_profile(person, "Bryan Holl")
 
