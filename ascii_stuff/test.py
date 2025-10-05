@@ -98,7 +98,7 @@ class Profile:
     profile_pic : str
         Path to profile picture (from users.profile_pic)
     """
-    def __init__(self, user_name, name_font):
+    def __init__(self):
 
         data = retrieve_usr(None)
 
