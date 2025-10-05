@@ -81,7 +81,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'bryan_data'))
 from lord_save_me import add_message, get_messages_between
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'isaacs_challenge_stuff'))
-from challenge import animation
+from animation import animation
 
 
 # Soft Retro Gruvbox color scheme

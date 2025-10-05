@@ -99,9 +99,14 @@ class Profile:
     profile_pic : str
         Path to profile picture (from users.profile_pic)
     """
+
+    
+
     def __init__(self):
 
-        data = retrieve_usr(3)
+        self.USER = 4  # Current logged-in user ID for testing
+
+        data = retrieve_usr(self.USER)
 
         self.id = data[0]
         self.user_name = data[1]
@@ -109,7 +114,7 @@ class Profile:
         self.bio = data[5]
         self.github = data[6]
         self.profile_pic = data[10]
-        self.i = 3
+        self.i = self.USER
 
 
 
@@ -192,7 +197,7 @@ if __name__ == "__main__":
     repeat = True
     while repeat:
 
-        ui.pointing_at_self = (person.i == 3)
+        ui.pointing_at_self = (person.i == person.USER)
         ui.print_profile(person, "Bryan Holl")
 
         key = ui.capture_keypress()
@@ -251,7 +256,7 @@ if __name__ == "__main__":
 
             elif key == 3:  # Right arrow - Next profile
                 if person.i > 5:
-                    person.i = 3  # CHANGE THESE IF YOU CHANGE # OF USERS
+                    person.i = person.USER # CHANGE THESE IF YOU CHANGE # OF USERS
                 else:
                     person.i += 1
                 data = retrieve_usr(person.i)

@@ -36,11 +36,11 @@ def get_conn():
     )
     return conn
 
-challenge_script = r'challenge.ps1' # edit to use bash script for linux
+challenge_script = os.path.join(os.path.dirname(__file__), 'challenge.sh')
 
 def get_user_code(user, prompt: str) -> str:
     print(f"{prompt}")
-    subprocess.run(["powershell", "-ExecutionPolicy", "Bypass", "-file", challenge_script]) # edit to use bash script for linux
+    subprocess.run(["bash", challenge_script])
 
 
 def store_answer(username, answer, challenge_selected) -> None:
