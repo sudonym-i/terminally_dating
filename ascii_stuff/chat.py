@@ -434,6 +434,8 @@ class ChatUI:
         str or None
             The message text, or None if cancelled/special command
         """
+        # Update messages from database before rendering
+        self.update()
         self.render_chat()
         try:
             message = input()
@@ -445,6 +447,6 @@ class ChatUI:
                 self.push_message(self.user_name, message.strip())
 
             return message.strip()
-        
+
         except (KeyboardInterrupt, EOFError):
             return None
