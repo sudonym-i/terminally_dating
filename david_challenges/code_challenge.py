@@ -133,4 +133,3 @@ def code_challenge(user1, user2):
         print(f"\nChallenge not accepted.")
         return
     
-code_challenge("Donald", "Daniel")  # Example call to the function with two users
