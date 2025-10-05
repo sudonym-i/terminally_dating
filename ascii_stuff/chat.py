@@ -187,6 +187,9 @@ class ChatUI:
         # Load existing messages from database
         self.messages = get_messages_between(user_name, chat_partner)
 
+    def update(self):
+        self.messages = get_messages_between(self.user_name, self.chat_partner)
+
     def push_message(self, sender, message):
         """
         Add a message to the chat.
@@ -251,8 +254,6 @@ class ChatUI:
             add_message(mess=message, send=sender, rec=receiver)
         except Exception as e:
             print(f"Warning: Failed to save message to database: {e}")
-        finally:
-            self.messages = get_messages_between(self.user_name, self.chat_partner)
 
     def render_chat(self):
         """

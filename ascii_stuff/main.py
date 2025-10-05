@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from bryan_data_for_ascii.help_me import retrieve_usr
+from chat import ChatUI 
 
 """
 Test Module - Mock Implementation for Frontend Testing
@@ -245,6 +246,7 @@ if __name__ == "__main__":
                     print(f"DEBUG: msg = {repr(msg)}")  # Debug output
                     if msg is None or (msg and msg.lower() == 'exit'):
                         break
+                    chat.messages = chat.update()
                
 
             elif key == 3:  # Right arrow - Next profile
