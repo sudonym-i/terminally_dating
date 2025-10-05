@@ -136,9 +136,9 @@ class UI:
         ]
         else:
             instructions = [
-                pyfiglet.figlet_format("[<-] next", font=instruction_font),
-                pyfiglet.figlet_format("[^] return to profile", font=instruction_font),
-                pyfiglet.figlet_format("[->] go back", font=instruction_font)
+                pyfiglet.figlet_format("[<-] My profile", font=instruction_font),
+                pyfiglet.figlet_format("[^] Chat", font=instruction_font),
+                pyfiglet.figlet_format("[->] Next", font=instruction_font)
             ]
 
         # Split each instruction into lines
@@ -198,6 +198,8 @@ class UI:
             return None
         except Exception as e:
             return 0
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 
 
