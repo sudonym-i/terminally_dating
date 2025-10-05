@@ -188,8 +188,8 @@ if __name__ == "__main__":
     # Mock data flow (current implementation)
     person = Profile()
     ui = UI()
+    repeat = True
     while repeat:
-        repeat = True
 
         ui.print_profile(person, "Bryan Holl")
 
