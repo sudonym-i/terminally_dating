@@ -126,23 +126,27 @@ def get_messages_between(user1, user2):
     Retrieve all messages between two users.
     Returns list of tuples: (sender, message, timestamp)
     """
-    with get_conn() as conn:
-        with conn.cursor() as curr:
-            curr.execute(
-                """SELECT sender, message, date_uploaded
-                   FROM messages
-                   WHERE (sender = %s AND receiver = %s)
-                      OR (sender = %s AND receiver = %s)
-                   ORDER BY date_uploaded ASC;""",
-                (user1, user2, user2, user1)
-            )
-            messages = curr.fetchall()
-            # Convert to format expected by ChatUI: (sender, message, timestamp)
-            formatted_messages = []
-            for sender, message, timestamp in messages:
-                time_str = timestamp.strftime("%H:%M") if timestamp else "00:00"
-                formatted_messages.append((sender, message, time_str))
-            return formatted_messages
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as curr:
+                curr.execute(
+                    """SELECT sender, message, date_uploaded
+                       FROM messages
+                       WHERE (sender = %s AND receiver = %s)
+                          OR (sender = %s AND receiver = %s)
+                       ORDER BY date_uploaded ASC;""",
+                    (user1, user2, user2, user1)
+                )
+                messages = curr.fetchall()
+                # Convert to format expected by ChatUI: (sender, message, timestamp)
+                formatted_messages = []
+                for sender, message, timestamp in messages:
+                    time_str = timestamp.strftime("%H:%M") if timestamp else "00:00"
+                    formatted_messages.append((sender, message, time_str))
+                return formatted_messages
+    except Exception as e:
+        print(f"Error loading messages: {e}")
+        return []  # Return empty list if database fails
         
 def retrieve_answers(args):
     id = int(input("Answers ID: ").strip())

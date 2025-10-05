@@ -247,7 +247,10 @@ class ChatUI:
         receiver = self.chat_partner if sender == self.user_name else self.user_name
 
         # Add message to database
-        add_message(mess=message, send=sender, rec=receiver)
+        try:
+            add_message(mess=message, send=sender, rec=receiver)
+        except Exception as e:
+            print(f"Warning: Failed to save message to database: {e}")
 
     def render_chat(self):
         """
