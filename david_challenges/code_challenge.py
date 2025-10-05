@@ -6,9 +6,6 @@ import psycopg2
 
 #["ID", "Description", "Prompt1", "Prompt2"]
 
-# Temporary player selection for testing
-player = input("Enter player number (1 or 2): ")
-
 def get_answer(prob_id, username):
     # Gets code answer from database
     with get_conn() as conn:
@@ -74,6 +71,9 @@ def code_challenge(user1, user2):
     """
     Gets code snippets from two users and attempts to execute them
     """
+
+    # Temporary player selection for testing
+    player = input("Enter player number (1 or 2): ")
 
     # Select challenge
     #challenge_selected = random.choice(challenges) # randomly selects a challenge from the challenges list
