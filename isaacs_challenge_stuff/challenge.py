@@ -3,6 +3,8 @@ import os
 import time
 import sys
 import subprocess
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'david_challenges'))
+from code_challenge import code_challenge
 
 # Soft Retro Gruvbox color scheme
 class Colors:
@@ -110,4 +112,4 @@ def animation():
 
     countdown(seconds)
 
-    # NEED TO GO TO DAVIDS CODE HERE FOTR CHALLENGE
+    code_challenge("Donald", "Daniel")
