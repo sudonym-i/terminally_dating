@@ -70,6 +70,12 @@ def main():
     sp.add_parser("init").set_defaults(func=init_db)
     sp.add_parser("add").set_defaults(func=add_user)
     sp.add_parser("get").set_defaults(func=retrieve_usr)
+    with get_conn() as conn:
+        with conn.cursor() as curr:
+            curr.execute("ALTER TABLE tablesd ADD COLUMN pict TEXT;")
+        conn.commit()
+    print(f"Added font :)")
+
 
 
     args = ap.parse_args()

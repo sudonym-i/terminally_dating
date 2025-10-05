@@ -1,4 +1,4 @@
-#!/home/isaac/projects/terminally_dating/bryan_data/.venv/bin/python3
+#!/home/sudonym/terminally_dating-1/bryan_data/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
