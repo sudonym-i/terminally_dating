@@ -58,7 +58,7 @@ def add_user(args):
     print(f"Added user: {username}")
 
 def retrieve_usr(args):
-    usr_id = 2
+    usr_id = 3
     print("help" + str(usr_id))
     with get_conn() as conn:
         print("help" + str(usr_id))
