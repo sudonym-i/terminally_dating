@@ -171,12 +171,6 @@ class UI:
 
 
         return
-    # 
-    def print_square(self):
-            term_width = os.get_terminal_size().columns
-            right_margin = term_width - 46
-            for i in range(18):
-                print(' ' * right_margin + '█' * 46)
 
 
     def capture_keypress(self):
@@ -185,6 +179,12 @@ class UI:
         try:
             tty.setraw(fd)
             ch = sys.stdin.read(1)
+            if ch == 'q':
+                    return 99
+            elif ch == '\n' or ch == '\r':
+                return 69
+            
+
             if ch == '\x1b':  # ESC sequence
                 ch = sys.stdin.read(2)
                 if ch == '[D':    # Left arrow
@@ -200,6 +200,150 @@ class UI:
             return 0
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+
+    def edit_profile(self, profile):
+        """Edit profile parameters with interactive UI"""
+        os.system('clear')
+        term_width = os.get_terminal_size().columns
+
+        fields = {
+            'user_name': {'label': 'Username', 'current': profile.user_name},
+            'name_font': {'label': 'Name Font', 'current': profile.name_font},
+            'bio': {'label': 'Bio', 'current': profile.bio},
+            'github': {'label': 'GitHub', 'current': profile.github},
+            'profile_pic': {'label': 'Profile Picture Path', 'current': profile.profile_pic}
+        }
+
+        field_keys = list(fields.keys())
+        selected_index = 0
+
+        end = False
+
+        while not end:
+            os.system('clear')
+            print("\n\n" + Colors.AQUA + "\\"*term_width + Colors.RESET + "\n\n")
+            print(Colors.BG_ORANGE + Colors.BLACK + " Edit Profile " + Colors.RESET + "\n\n")
+
+            # Display all fields
+            for i, (key, field_data) in enumerate(fields.items()):
+                if i == selected_index:
+                    prefix = Colors.BG_YELLOW + Colors.BLACK + " > " + Colors.RESET + " "
+                else:
+                    prefix = "   "
+
+                label = field_data['label']
+                value = field_data['current']
+
+                # Truncate long values for display
+                display_value = value if len(str(value)) < 60 else str(value)[:57] + "..."
+
+                print(f"{prefix}{Colors.ORANGE}{label}:{Colors.RESET} {Colors.FG}{display_value}{Colors.RESET}")
+
+                # Show font preview for name_font field
+                if key == 'name_font' and i == selected_index:
+                    try:
+                        preview = pyfiglet.figlet_format(profile.user_name, font=value)
+                        preview_lines = preview.split('\n')[:4]  # Show first 4 lines
+                        for line in preview_lines:
+                            if line.strip():
+                                print(f"      {Colors.BLUE}{line[:term_width-10]}{Colors.RESET}")
+                    except:
+                        print(f"      {Colors.RED}(Invalid font){Colors.RESET}")
+
+                print()
+
+            # Instructions
+            print("\n" + Colors.AQUA + "/"*term_width + Colors.RESET + "\n")
+            instructions = f"{Colors.BLUE}[↑/↓] Navigate  [Enter] Edit  [Esc] Save & Exit{Colors.RESET}"
+            print(instructions)
+
+            # Capture keypress
+            key = self.capture_keypress()
+
+            if key == 4:  # Down arrow
+                selected_index = (selected_index + 1) % len(field_keys)
+            elif key == 2:  # Up arrow
+                selected_index = (selected_index - 1) % len(field_keys)
+
+            elif key == 99:  # Escape key
+                end = True
+                break
+            elif key == 69:  # Enter key
+                # Edit the selected field
+                field_key = field_keys[selected_index]
+
+                if field_key == 'name_font':
+                    # Special handling for font selection with preview
+                    new_font = self._select_font(profile.user_name, fields[field_key]['current'])
+                    if new_font:
+                        fields[field_key]['current'] = new_font
+                        profile.name_font = new_font
+                else:
+                    # Regular text input
+                    os.system('clear')
+                    print(f"\n{Colors.ORANGE}Edit {fields[field_key]['label']}:{Colors.RESET}\n")
+                    print(f"{Colors.FG}Current: {fields[field_key]['current']}{Colors.RESET}\n")
+
+                    # Restore terminal to normal mode for input
+                    new_value = input(f"{Colors.YELLOW}New value: {Colors.RESET}")
+
+                    if new_value.strip():
+                        fields[field_key]['current'] = new_value
+                        setattr(profile, field_key, new_value)
+
+        self.print_profile(profile, profile.user_name)
+        return profile
+
+
+    def _select_font(self, preview_text, current_font):
+        """Font selection UI with live preview"""
+        fonts_list = sorted(list(self.fonts))
+        try:
+            selected_index = fonts_list.index(current_font)
+        except ValueError:
+            selected_index = 0
+
+        term_width = os.get_terminal_size().columns
+
+        while True:
+            os.system('clear')
+            print("\n\n" + Colors.AQUA + "\\"*term_width + Colors.RESET + "\n\n")
+            print(Colors.BG_ORANGE + Colors.BLACK + " Select Font " + Colors.RESET + "\n\n")
+
+            current_font_name = fonts_list[selected_index]
+
+            # Show preview
+            try:
+                preview = pyfiglet.figlet_format(preview_text, font=current_font_name)
+                preview_lines = preview.split('\n')
+                for line in preview_lines:
+                    if line.strip():
+                        # Truncate if too wide
+                        display_line = line if len(line) < term_width - 10 else line[:term_width-10]
+                        print(f"  {Colors.YELLOW}{display_line}{Colors.RESET}")
+            except:
+                print(f"  {Colors.RED}Error rendering font{Colors.RESET}")
+
+            print("\n" + Colors.AQUA + "/"*term_width + Colors.RESET + "\n")
+
+            # Show current font name and position
+            print(f"{Colors.ORANGE}Font:{Colors.RESET} {Colors.FG}{current_font_name}{Colors.RESET}")
+            print(f"{Colors.BLUE}({selected_index + 1}/{len(fonts_list)}){Colors.RESET}\n")
+
+            # Instructions
+            print(f"{Colors.BLUE}[←/→] Browse  [Enter] Select  [q] Cancel{Colors.RESET}")
+
+            key = self.capture_keypress()
+
+            if key == 3:  # Right arrow
+                selected_index = (selected_index + 1) % len(fonts_list)
+            elif key == 1:  # Left arrow
+                selected_index = (selected_index - 1) % len(fonts_list)
+            elif key == 69:  # Enter
+                return fonts_list[selected_index]
+            elif key == 99:  # Escape
+                return None
 
 
 
