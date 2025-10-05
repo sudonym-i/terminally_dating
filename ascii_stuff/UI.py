@@ -122,7 +122,7 @@ class UI:
         # Calculate spacing to align github to the right
         github_text = profile.github
         spacing = term_width - len(lines[-1]) - len("GITHUB: " + github_text)
-        print(f"{' ' * spacing}{Colors.ORANGE}GITHUB: {github_text}{Colors.RESET}")
+        print(f"{' ' * spacing}{Colors.ORANGE} ⚡GITHUB: {github_text}{Colors.RESET}")
 
 
         # Print instructions at the bottom
