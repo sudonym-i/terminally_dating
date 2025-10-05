@@ -1,6 +1,7 @@
 
 from UI import UI
 from image_to_ascii_art import profile_picture
+import subprocess
 
 ## mock profile class for testing
 
@@ -21,5 +22,4 @@ if __name__ == "__main__":
     person = Profile("Bryan Holl", "delta_corps_priest_1")
     ui = UI()
 
-    ui.print_profile(person)
-    ui.capture_keypress()
+    ui.print_profile(person, "Bryan Holl")

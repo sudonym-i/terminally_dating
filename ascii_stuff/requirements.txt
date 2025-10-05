@@ -1,2 +1,4 @@
 pyfiglet
 ascii_magic
+websockets
+websocket-client

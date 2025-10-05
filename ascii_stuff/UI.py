@@ -47,7 +47,10 @@ class UI:
              "this", "amc_aaa01", "fraktur", "nvscript"}
 
 
-    def print_profile( self, profile):
+    def print_profile( self, profile, user):
+
+        # "user" is the logged in user, teh user who is viewing this terminal output
+
 
         os.system('clear')
         term_width = os.get_terminal_size().columns
@@ -124,11 +127,19 @@ class UI:
 
         # Print instructions at the bottom
         instruction_font = "pagga"
-        instructions = [
-            pyfiglet.figlet_format("[->] next", font=instruction_font),
-            pyfiglet.figlet_format("[^] return to profile", font=instruction_font),
-            pyfiglet.figlet_format("[<-] go back", font=instruction_font)
+
+        if profile.user_name == user:
+            instructions = [
+            pyfiglet.figlet_format("[<-] Browse", font=instruction_font),
+            pyfiglet.figlet_format("[^] Edit", font=instruction_font),
+            pyfiglet.figlet_format("[->] Challenge", font=instruction_font)
         ]
+        else:
+            instructions = [
+                pyfiglet.figlet_format("[<-] next", font=instruction_font),
+                pyfiglet.figlet_format("[^] return to profile", font=instruction_font),
+                pyfiglet.figlet_format("[->] go back", font=instruction_font)
+            ]
 
         # Split each instruction into lines
         instruction_lines = [instr.split('\n') for instr in instructions]
@@ -184,8 +195,9 @@ class UI:
                     return 3
                 elif ch == '[B':  # Down arrow
                     return 4
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+            return None
+        except Exception as e:
+            return 0
 
 
 
