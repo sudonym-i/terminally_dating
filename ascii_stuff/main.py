@@ -191,9 +191,12 @@ if __name__ == "__main__":
     repeat = True
     while repeat:
 
+        ui.pointing_at_self = (person.i == 3)
         ui.print_profile(person, "Bryan Holl")
 
-        if ( ui.capture_keypress() == 1):
+        key = ui.capture_keypress()
+
+        if key == 1:
             # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
             chat = ChatUI("Bryan Holl", "Isaac")
             chat.render_chat()
@@ -206,15 +209,16 @@ if __name__ == "__main__":
 
             chat.request_message()
 
-        elif (ui.capture_keypress() == 2):
+        elif key == 2:
             # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
             ui.edit_profile(person)
-        elif (ui.capture_keypress() == 3):
+        elif key == 3:
             # DATABASE NOTE: Replace with ui.edit_profile_from_db(user_id)
             ui.pointing_at_self = False # CHANGE
-            if i > 5:
-                i = 3 # CHANGE THESE IF YOU CHANGE # OF USERS
-            person.i += 1
+            if person.i > 5:
+                person.i = 3 # CHANGE THESE IF YOU CHANGE # OF USERS
+            else:
+                person.i += 1
             data = retrieve_usr(person.i)
             person.id = data[0]
             person.user_name = data[1]
