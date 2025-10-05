@@ -245,7 +245,6 @@ if __name__ == "__main__":
 
                 while True:
                     msg = chat.request_message()
-                    print(f"DEBUG: msg = {repr(msg)}")  # Debug output
                     if (msg.lower() == 'exit'):
                         break
                

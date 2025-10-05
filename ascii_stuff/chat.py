@@ -80,6 +80,8 @@ from datetime import datetime
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'bryan_data'))
 from lord_save_me import add_message, get_messages_between
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'isaacs_challenge_stuff'))
+from challenge import animation
 
 
 # Soft Retro Gruvbox color scheme
@@ -442,6 +444,7 @@ class ChatUI:
             if message == "/code":
                 os.system('clear')
                 print("CODE CHALLENGE")
+                animation()
 
             else:
                 self.push_message(self.user_name, message.strip())

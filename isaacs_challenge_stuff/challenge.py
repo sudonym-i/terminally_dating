@@ -97,7 +97,7 @@ def countdown(seconds, title="STARTS IN"):
     subprocess.run(['bash', 'code.sh'])
 
 
-if __name__ == "__main__":
+def animation():
     # Default countdown from 10 seconds
     seconds = 3
 
