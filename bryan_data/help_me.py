@@ -57,7 +57,9 @@ def add_user(args):
 
 def retrieve_usr(args):
     usr_id = int(input("User ID: ").strip())
+    print("help" + str(usr_id))
     with get_conn() as conn:
+        print("help" + str(usr_id))
         with conn.cursor() as curr:
             curr.execute("SELECT * FROM tablesd WHERE id = %s;", (usr_id,))
             info = curr.fetchone()
