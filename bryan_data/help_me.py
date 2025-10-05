@@ -46,11 +46,13 @@ def add_user(args):
     bio = input("Bio: ").strip()
     profile_link = input("Profile Link: ").strip()
     password_hash = input("Password Hash: ").strip()
+    user_font = input("User Font: ").strip()
+    user_pict = input("User Picture: ").strip()
     with get_conn() as conn:
         with conn.cursor() as curr:
             curr.execute(
-                "INSERT INTO tablesd (username,email,age,usr_location,bio,profile_link,password_hash) VALUES (%s,%s,%s,%s,%s,%s,%s);",
-                (username,email,age,usr_location,bio,profile_link,password_hash)
+                "INSERT INTO tablesd (username,email,age,usr_location,bio,profile_link,password_hash,font,pict) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);",
+                (username,email,age,usr_location,bio,profile_link,password_hash,user_font,user_pict)
             )
         conn.commit()
     print(f"Added user: {username}")
