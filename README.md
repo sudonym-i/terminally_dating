@@ -1,4 +1,4 @@
-# Terminally Dating 💻💘
+# Terminally Dating 
 
 A terminal-based dating application for developers, featuring ASCII art profiles, real-time chat, and collaborative coding challenges.
 
