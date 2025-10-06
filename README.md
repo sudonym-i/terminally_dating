@@ -4,21 +4,30 @@ A terminal-based dating application for developers, featuring ASCII art profiles
 
 ## Overview
 
+<img width="1906" height="986" alt="Screenshot 2025-10-05 104237" src="https://github.com/user-attachments/assets/6029e309-2c4e-443e-a36c-f3cd51166410" />
+
+
 Terminally Dating is a unique social networking application that runs entirely in the terminal. Users can view ASCII art profiles, chat with matches, edit their profiles, and participate in collaborative coding challenges with their matches.
 
 ## Features
+
 
 ### 🎨 ASCII Art Profiles
 - Beautiful ASCII art profile pictures rendered in the terminal
 - Customizable username fonts from a curated selection of pyfiglet fonts
 - Personalized bios and GitHub links
 - Soft retro Gruvbox color scheme for a comfortable viewing experience
+- All profiles are retriwved from/ stored in a personal database
 
 ### 💬 Real-Time Chat
 - Terminal-based chat interface with color-coded messages
 - Message history stored in PostgreSQL database
 - Intuitive left/right-aligned message display (user vs. partner)
 - Type `/code` to initiate a coding challenge with your match
+- completely private, written from scratch and uses only our own proprietary database
+
+<img width="1912" height="991" alt="Screenshot 2025-10-05 104511" src="https://github.com/user-attachments/assets/ac72e155-44f5-42bc-a193-4ba723fbc0ca" />
+
 
 ### 🎯 Collaborative Coding Challenges
 - Random coding challenges fetched from the database
@@ -168,13 +177,6 @@ conn = psycopg2.connect(
 )
 ```
 
-### User Configuration
-
-In [main.py](ascii_stuff/main.py), set your user ID:
-```python
-self.USER = 4  # Your user ID in the database
-```
-
 ### Available Fonts
 
 The application includes 25+ ASCII art fonts for username display:
@@ -192,40 +194,6 @@ The application uses a soft retro Gruvbox color palette:
 - **Accents**: Subtle orange, aqua, blue, purple, yellow
 - **Highlights**: Soft red, green for messages
 
-## Technical Details
-
-### Key Components
-
-1. **UI Class** ([UI.py](ascii_stuff/UI.py)):
-   - Handles profile rendering
-   - Manages keyboard input capture
-   - Provides profile editing interface
-   - Uses `pyfiglet` for ASCII text art
-   - Uses `ascii_magic` for image-to-ASCII conversion
-
-2. **ChatUI Class** ([chat.py](ascii_stuff/chat.py)):
-   - Renders chat interface
-   - Manages message display and input
-   - Stores/retrieves messages from database
-   - Triggers coding challenges
-
-3. **Code Challenge System** ([code_challenge.py](david_challenges/code_challenge.py)):
-   - Fetches challenges from database
-   - Coordinates user code submissions
-   - Executes and validates combined code
-   - Stores answers in database
-
-4. **Animation System** ([animation.py](isaacs_challenge_stuff/animation.py)):
-   - Countdown timer with ASCII art
-   - Color-coded countdown (green → yellow → red)
-   - "GO!" animation before challenges
-
-### Security Notes
-
-- User code execution uses `exec()` - only use in trusted environments
-- No authentication system implemented (proof of concept)
-- Database credentials are hardcoded (should use environment variables in production)
-
 ## Development Status
 
 This is a proof-of-concept application demonstrating:
@@ -234,39 +202,8 @@ This is a proof-of-concept application demonstrating:
 - Real-time messaging
 - Collaborative coding challenges
 - PostgreSQL integration
+- Private, database creation and implementation,
+  - Using our personal database for profiles
+  - Using our own personal database system for messaging
+  - using our own database system for coop coding challenges
 
-### Future Improvements
-
-The codebase includes extensive documentation for migrating to a full production system:
-- User authentication and session management
-- Connection pooling for database
-- WebSocket support for real-time updates
-- Secure code execution sandbox
-- Profile picture upload system
-- Matching algorithm implementation
-- Message read receipts
-
-See inline comments in [UI.py](ascii_stuff/UI.py), [chat.py](ascii_stuff/chat.py), and [main.py](ascii_stuff/main.py) for detailed migration guides.
-
-## Contributing
-
-This project was built as a collaborative effort. Key contributors:
-- Profile UI and rendering system
-- Chat interface and messaging
-- Database integration
-- Coding challenge system
-- ASCII art and animations
-
-## License
-
-[Add your license here]
-
-## Acknowledgments
-
-- Built with [pyfiglet](https://github.com/pwaller/pyfiglet) for ASCII art text
-- Uses the beautiful Gruvbox color scheme
-- Inspired by the joy of terminal applications and developer culture
-
----
-
-**Made with ❤️ and lots of escape sequences**
