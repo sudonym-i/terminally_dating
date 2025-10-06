@@ -104,7 +104,7 @@ class Profile:
 
     def __init__(self):
 
-        self.USER = 5  # Current logged-in user ID for testing
+        self.USER = 4  # Current logged-in user ID for testing
 
         data = retrieve_usr(self.USER)
 
@@ -206,7 +206,7 @@ if __name__ == "__main__":
             # When viewing own profile
             if key == 1:  # Left arrow - Chat
                 # DATABASE NOTE: Replace with chat = ChatUI(user_id, partner_id, db_conn)
-                chat = ChatUI("Isaac", "Bryan")
+                chat = ChatUI("Bryan", "Isaac")
 
                 while True:
                     msg = chat.request_message()
